@@ -1,35 +1,24 @@
 from rest_framework import serializers
-from .models import Category, Instructor, Course
+from .models import Course, Category, Instructor
 
-# Category Serializer
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['id', 'name', 'description']
 
-# Instructor Serializer
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
-        fields = '__all__'
+        fields = ['id', 'name', 'email']
 
-# Course Serializer
 class CourseSerializer(serializers.ModelSerializer):
-    # Read-only nested serializers
     category = CategorySerializer(read_only=True)
-    instructors = InstructorSerializer(many=True, read_only=True)
-
-    # Write-only fields for POST/PUT
     category_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(),
-        write_only=True,
-        source='category'
+        queryset=Category.objects.all(), source='category', write_only=True
     )
+    instructors = InstructorSerializer(many=True, read_only=True)
     instructor_ids = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Instructor.objects.all(),
-        write_only=True,
-        source='instructors'
+        many=True, queryset=Instructor.objects.all(), source='instructors', write_only=True
     )
 
     class Meta:
@@ -38,8 +27,8 @@ class CourseSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'description',
-            'category',         # Read-only nested data
-            'category_id',      # Write-only for incoming POST/PUT
-            'instructors',      # Read-only nested data
-            'instructor_ids'    # Write-only for incoming POST/PUT
+            'category',
+            'category_id',
+            'instructors',
+            'instructor_ids',
         ]
