@@ -9,6 +9,7 @@ router.register('instructors', InstructorViewSet)
 router.register('courses', CourseViewSet)
 
 urlpatterns = [
-    path('login/', obtain_auth_token),  # ✅ Add this line
+    path('login/', obtain_auth_token),
+    path('api-token-auth/', obtain_auth_token),
     path('', include(router.urls)),
 ]
